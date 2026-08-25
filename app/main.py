@@ -15,6 +15,8 @@ def main():
             x = command.split()
             if x[1] in builtin_commands:
                 print(f"{x[1]} is a shell builtin")
+            else:
+                print(f"{command[5:]}: command not found")
         else:
             print(f"{command}: command not found")
 
