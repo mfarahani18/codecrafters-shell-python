@@ -5,7 +5,7 @@ import subprocess
 
 def main():
 
-    builtin_commands = ["echo", "exit", "type", "pwd"]
+    builtin_commands = ["echo", "exit", "type", "pwd", "cd"]
 
     while True:
         sys.stdout.write("$ ")
@@ -20,7 +20,14 @@ def main():
         
         elif command[0:5] == "pwd":
             print(os.getcwd())
-
+        
+        elif command[0:3] == "cd ":
+            x = command.split()
+            if os.path.isdir(x[1]):
+                os.chdir(x[1])
+            else:
+                print(f"{x[1]} is not a directory")
+            
         elif command[0:5] == "type ":
             x = command.split()
 
