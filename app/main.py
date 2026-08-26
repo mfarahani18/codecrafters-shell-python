@@ -26,7 +26,7 @@ def main():
             if os.path.isdir(x[1]):
                 os.chdir(x[1])
             else:
-                print(f"{x[1]} is not a directory")
+                print(f"{x[0]}: {x[1]}: No such file or directory")
             
         elif command[0:5] == "type ":
             x = command.split()
