@@ -5,6 +5,26 @@ class Shell():
 
      builtin_commands = ["echo", "exit", "type", "pwd", "cd"]
 
+     def parse_input(self, text):
+        args = []
+        current = ""
+        in_quotes = False
+
+        for char in text:
+            if char == "'":
+                in_quotes = not in_quotes
+            elif char.isspace() and not in_quotes:
+                if current:
+                    args.append(current)
+                    current = ""
+            else:
+                current += char
+
+        if current:
+            args.append(current)
+
+        return args
+
      def pwd(self):
           return os.getcwd()
      
