@@ -75,7 +75,7 @@ class Shell():
              full_path = os.path.join(i, command)
 
              if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
-                 subprocess.run([command] + args, executable=full_path)
+                 subprocess.run([command, *args], executable=full_path)
 
                  found = True
                  break
