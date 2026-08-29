@@ -18,6 +18,7 @@ def main():
 
     while True:
         sys.stdout.write("$ ")
+        user_input = input()
         parts = my_shell.parse_input(user_input)
         command = parts[0]
         args = parts[1:]
