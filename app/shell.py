@@ -19,7 +19,7 @@ class Shell():
                 word += char
                 escape_next = False
                 continue
-            if char == "\\":
+            if char == "\\" and not in_single_quotes and not in_double_quotes:
                 escape_next = True
                 continue
             elif char == "'" and not in_double_quotes:
