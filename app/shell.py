@@ -14,13 +14,21 @@ class Shell():
         in_double_quotes = False
         escape_next = False
 
-        for char in text:
+        for i, char in enumerate(text):
             if escape_next:
                 word += char
                 escape_next = False
                 continue
-            if char == "\\" and not in_single_quotes and not in_double_quotes:
-                escape_next = True
+            if char == "\\":
+                if in_single_quotes:
+                    word +=char
+                elif in_double_quotes:
+                    if i+1 < len(text) and text[i+1] in ['"', '\\']:
+                        escape_next = True
+                    else:
+                        word += char
+                else:
+                    escape_next = True
                 continue
             elif char == "'" and not in_double_quotes:
                 in_single_quotes = not in_single_quotes
