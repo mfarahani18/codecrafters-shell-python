@@ -8,21 +8,24 @@ class Shell():
 
      def parse_input(self, text):
         args = []
-        current = ""
-        in_quotes = False
+        world = ""
+        in_single_quotes = False
+        in_double_quotes = False
 
         for char in text:
-            if char == "'":
-                in_quotes = not in_quotes
-            elif char.isspace() and not in_quotes:
-                if current:
-                    args.append(current)
-                    current = ""
+            if char == "'" and not in_double_quotes:
+                in_single_quotes = not in_single_quotes
+            elif char == '"' and not in_single_quotes:
+                in_double_quotes = not in_double_quotes
+            elif char.isspace() and not in_single_quotes and not in_double_quotes:
+                if world:
+                    args.append(world)
+                    world = ""
             else:
-                current += char
+                world += char
 
-        if current:
-            args.append(current)
+        if world:
+            args.append(world)
 
         return args
 
