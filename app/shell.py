@@ -18,15 +18,16 @@ class Shell:
 
     def redirect(self, command, real_args, file_name):
         directory = os.path.dirname(file_name)
-        print(f' Redirecting output to {file_name}')
-        print(directory)
         if directory:
             os.makedirs(directory, exist_ok=True)
+        if command in self.commands:
             output = self.commands[command](*real_args)
-            with open(file_name, "w") as f:
-                f.write(output)
         else:
-            raise ValueError(f"Command '{command}' did not return any output.")
+            output = self.run_not_found(
+                command, *real_args, capture=True)
+        with open(file_name, "w") as f:
+            if output:
+                f.write(output)
 
     def parse_input(self, text):
         args = []
@@ -109,24 +110,25 @@ class Shell:
             if found == False:  # if not found
                 print(f"{args[0]}: not found")
 
-    def is_command_exists(self, command):
-        # Check if the command exists in the system
-        pass
 
-    def run_not_found(self, command, *args):
+    def run_not_found(self, command, *args, capture=False):
         y = os.environ["PATH"]
         z = y.split(os.pathsep)
 
-        found = False
 
         for i in z:
             full_path = os.path.join(i, command)
 
             if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
+                if capture:
+                    result = subprocess.run(
+                        [command, *args],
+                        executable=full_path,
+                        capture_output=True,
+                        text=True,
+                    )
+                    return result.stdout
                 subprocess.run([command, *args], executable=full_path)
 
-                found = True
-                break
-
-        if found == False:  # if not found
-            print(f"{command}: command not found")
+                return None
+        return f"{command}: command not found"
