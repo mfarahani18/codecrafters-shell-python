@@ -17,16 +17,16 @@ def main():
         command = parts[0]
         args = parts[1:]
 
-        if ">" in args:
+        redirect_symbols = [">", "1>"]
+        for symbol in redirect_symbols:
+            if symbol in args:
+                idx = args.index(symbol)
+                file_name = args[idx + 1]
+                real_args = args[:idx]
+                my_shell.redirect(command, real_args, file_name)
+                break
 
-            idx = args.index(">")
-
-            file_name = args[idx + 1]
-            real_args = args[:idx]
-
-            my_shell.redirect(command, real_args, file_name)
-
-        elif command in my_shell.commands:
+        if command in my_shell.commands:
 
             result = my_shell.commands[command](*args)
 
