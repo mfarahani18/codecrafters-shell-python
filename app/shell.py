@@ -78,7 +78,7 @@ class Shell:
         sys.exit()
 
     def echo(self, *args):
-        return " ".join(args)
+        return " ".join(args) + "\n"
 
     def cd(self, *args):
         if args[0] == "~":
