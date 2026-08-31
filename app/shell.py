@@ -127,8 +127,12 @@ class Shell:
                         capture_output=True,
                         text=True,
                     )
-                    return result.stdout
-                subprocess.run([command, *args], executable=full_path)
 
+                    if result.stderr:
+                        print(result.stderr, end="")
+                    return result.stdout
+
+                else:
+                    subprocess.run([command, *args], executable=full_path)
                 return None
         return f"{command}: command not found"
