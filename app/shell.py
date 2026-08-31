@@ -86,7 +86,7 @@ class Shell:
         elif os.path.isdir(args[0]):
             os.chdir(args[0])
         else:
-            print(f"cd: {args[0]}: No such file or directory")
+            print(f"cd: {args[0]}: No such file or directorydsadasdas")
 
     def type(self, *args):
         if args[0] in self.builtin_commands:
