@@ -10,6 +10,8 @@ def main():
         parts = my_shell.parse_input(user_input)
         command = parts[0]
         args = parts[1:]
+        
+        redirected = False
 
         redirect_symbols = [">", "1>"]
         for symbol in redirect_symbols:
