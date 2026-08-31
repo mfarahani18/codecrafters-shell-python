@@ -25,6 +25,7 @@ def main():
             idx = args.index(">")
             file_name = args[idx + 1]
             real_args = args[:idx]
+            print(f"Redirecting output of command '{command}' to file '{file_name}'")
             my_shell.redirect(command, real_args, file_name)
         elif result:
             print(result)
