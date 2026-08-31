@@ -18,7 +18,8 @@ class Shell:
 
     def redirect(self, command, real_args, file_name):
         directory = os.path.dirname(file_name)
-
+        print(file_name)
+        print(directory)
         if directory:
             os.makedirs(directory, exist_ok=True)
         output = self.commands[command](*real_args)
@@ -86,7 +87,7 @@ class Shell:
         elif os.path.isdir(args[0]):
             os.chdir(args[0])
         else:
-            print(f"cd: {args[0]}: No such file or directorydsadasdas")
+            print(f"cd: {args[0]}: No such file or directory")
 
     def type(self, *args):
         if args[0] in self.builtin_commands:
