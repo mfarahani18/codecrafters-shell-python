@@ -16,6 +16,8 @@ def main():
         result = None
         if command in my_shell.commands:
             result = my_shell.commands[command](*args)
+        else:
+            my_shell.run_not_found(command, *args)
             
         if ">" in args and result:
             idx = args.index(">")
@@ -25,8 +27,7 @@ def main():
         elif result:
             print(result)
 
-        else:
-            my_shell.run_not_found(command, *args)
+
 
 
 if __name__ == "__main__":
