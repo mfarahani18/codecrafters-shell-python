@@ -17,7 +17,10 @@ class Shell:
         }
 
     def redirect(self, command, real_args, file_name):
+        directory = os.path.dirname(file_name)
 
+        if directory:
+            os.makedirs(directory, exist_ok=True)
         output = self.commands[command](*real_args)
         if output:
             with open(file_name, "w") as f:
