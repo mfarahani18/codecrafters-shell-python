@@ -2,11 +2,30 @@ import os
 import sys
 import subprocess
 
-class Shell():
 
-     builtin_commands = ["echo", "exit", "type", "pwd", "cd"]
+class Shell:
 
-     def parse_input(self, text):
+    builtin_commands = ["echo", "exit", "type", "pwd", "cd"]
+
+    def __init__(self):
+        self.commands = {
+            "exit": lambda: self.exit(),
+            "echo": lambda *real_args: self.echo(*real_args),
+            "pwd": lambda: self.pwd(),
+            "cd": lambda *real_args: self.cd(*real_args),
+            "type": lambda *real_args: self.type(*real_args),
+        }
+
+    def redirect(self, command, real_args, file_name):
+
+        output = self.commands[command](*real_args)
+        if output:
+            with open(file_name, "w") as f:
+                f.write(output)
+        else:
+            raise ValueError(f"Command '{command}' did not return any output.")
+
+    def parse_input(self, text):
         args = []
         word = ""
 
@@ -21,9 +40,9 @@ class Shell():
                 continue
             if char == "\\":
                 if in_single_quotes:
-                    word +=char
+                    word += char
                 elif in_double_quotes:
-                    if i+1 < len(text) and text[i+1] in ['"', '\\']:
+                    if i + 1 < len(text) and text[i + 1] in ['"', "\\"]:
                         escape_next = True
                     else:
                         word += char
@@ -47,59 +66,64 @@ class Shell():
 
         return args
 
-     def pwd(self):
-          return os.getcwd()
-     
-     def exit(self):
-          sys.exit()
+    def pwd(self):
+        result = os.getcwd()
+        return result
 
-     def echo(self, *args):
-          return " ".join(args)
+    def exit(self):
+        sys.exit()
 
-     def cd(self, *args):
-            if args[0] == "~":
-                home = os.environ["HOME"]
-                os.chdir(home)
-            elif os.path.isdir(args[0]):
-                os.chdir(args[0])
-            else:
-               print(f"cd: {args[0]}: No such file or directory")
+    def echo(self, *args):
+        return " ".join(args)
 
-     def type(self, *args):
-          if args[0] in self.builtin_commands:
-                print(f"{args[0]} is a shell builtin")
+    def cd(self, *args):
+        if args[0] == "~":
+            home = os.environ["HOME"]
+            os.chdir(home)
+        elif os.path.isdir(args[0]):
+            os.chdir(args[0])
+        else:
+            print(f"cd: {args[0]}: No such file or directory")
 
-          else:
-               y = os.environ["PATH"]
-               z = y.split(os.pathsep)
+    def type(self, *args):
+        if args[0] in self.builtin_commands:
+            print(f"{args[0]} is a shell builtin")
 
-               found = False
+        else:
+            y = os.environ["PATH"]
+            z = y.split(os.pathsep)
 
-               for i in z:
-                    full_path = os.path.join(i, args[0])
+            found = False
 
-                    if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
-                         print(f"{args[0]} is {full_path}")
-                         found = True
-                         break
+            for i in z:
+                full_path = os.path.join(i, args[0])
 
-               if found == False:  # if not found
-                    print(f"{args[0]}: not found")
+                if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
+                    print(f"{args[0]} is {full_path}")
+                    found = True
+                    break
 
-     def run_not_found(self, command, *args):
-         y = os.environ["PATH"]
-         z = y.split(os.pathsep)
+            if found == False:  # if not found
+                print(f"{args[0]}: not found")
 
-         found = False
+    def is_command_exists(self, command):
+        # Check if the command exists in the system
+        pass
 
-         for i in z:
-             full_path = os.path.join(i, command)
+    def run_not_found(self, command, *args):
+        y = os.environ["PATH"]
+        z = y.split(os.pathsep)
 
-             if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
-                 subprocess.run([command, *args], executable=full_path)
+        found = False
 
-                 found = True
-                 break
+        for i in z:
+            full_path = os.path.join(i, command)
 
-         if found == False:  # if not found
-             print(f"{command}: command not found")
+            if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
+                subprocess.run([command, *args], executable=full_path)
+
+                found = True
+                break
+
+        if found == False:  # if not found
+            print(f"{command}: command not found")
