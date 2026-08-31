@@ -72,13 +72,13 @@ class Shell:
 
     def pwd(self):
         result = os.getcwd()
-        return result
+        return result + "\n"
 
     def exit(self):
         sys.exit()
 
     def echo(self, *args):
-        return " ".join(args)
+        return " ".join(args) + "\n"
 
     def cd(self, *args):
         if args[0] == "~":

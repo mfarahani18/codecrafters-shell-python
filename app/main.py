@@ -29,7 +29,7 @@ def main():
         if command in my_shell.commands:
             result = my_shell.commands[command](*args)
             if result is not None:
-                print(result.strip())
+                sys.stdout.write(result)
         else:
             my_shell.run_not_found(command, *args)
 
