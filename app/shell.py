@@ -72,7 +72,7 @@ class Shell:
 
     def pwd(self):
         result = os.getcwd()
-        return result
+        return result + "\n"
 
     def exit(self):
         sys.exit()
