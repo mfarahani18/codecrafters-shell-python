@@ -1,4 +1,4 @@
-from app.shell import Shell
+from shell import Shell
 import sys
 
 
@@ -28,9 +28,8 @@ def main():
 
         if command in my_shell.commands:
             result = my_shell.commands[command](*args)
-
             if result is not None:
-                sys.stdout.write(result)
+                print(result.strip())
         else:
             my_shell.run_not_found(command, *args)
 

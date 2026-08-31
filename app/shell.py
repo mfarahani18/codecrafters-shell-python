@@ -72,13 +72,13 @@ class Shell:
 
     def pwd(self):
         result = os.getcwd()
-        return result + "\n"
+        return result
 
     def exit(self):
         sys.exit()
 
     def echo(self, *args):
-        return " ".join(args) + "\n"
+        return " ".join(args)
 
     def cd(self, *args):
         if args[0] == "~":
@@ -112,9 +112,8 @@ class Shell:
 
 
     def run_not_found(self, command, *args, capture=False):
-        y = os.environ["PATH"]
+        y = os.environ.get("PATH", "")
         z = y.split(os.pathsep)
-
 
         for i in z:
             full_path = os.path.join(i, command)
@@ -135,4 +134,5 @@ class Shell:
                 else:
                     subprocess.run([command, *args], executable=full_path)
                 return None
-        return f"{command}: command not found"
+        print(f"{command}: command not found")
+        return ""
