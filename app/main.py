@@ -1,4 +1,4 @@
-from shell import Shell
+from app.shell import Shell
 import sys
 
 
