@@ -13,6 +13,7 @@ def main():
         parts = my_shell.parse_input(user_input)
         command = parts[0]
         args = parts[1:]
+        result = None
         if command in my_shell.commands:
             result = my_shell.commands[command](*args)
             
