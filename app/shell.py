@@ -18,7 +18,7 @@ class Shell:
 
     def redirect(self, command, real_args, file_name):
         directory = os.path.dirname(file_name)
-        print(file_name)
+        print(f' Redirecting output to {file_name}')
         print(directory)
         if directory:
             os.makedirs(directory, exist_ok=True)
