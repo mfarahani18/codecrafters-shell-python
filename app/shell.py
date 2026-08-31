@@ -22,8 +22,7 @@ class Shell:
         print(directory)
         if directory:
             os.makedirs(directory, exist_ok=True)
-        output = self.commands[command](*real_args)
-        if output:
+            output = self.commands[command](*real_args)
             with open(file_name, "w") as f:
                 f.write(output)
         else:
