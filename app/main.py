@@ -3,17 +3,11 @@ import sys
 
 
 def main():
-
     my_shell = Shell()
-
     while True:
-
         sys.stdout.write("$ ")
-
         user_input = input()
-
         parts = my_shell.parse_input(user_input)
-
         command = parts[0]
         args = parts[1:]
 
@@ -24,17 +18,18 @@ def main():
                 file_name = args[idx + 1]
                 real_args = args[:idx]
                 my_shell.redirect(command, real_args, file_name)
+                redirected = True
                 break
 
-        if command in my_shell.commands:
+        if redirected:
+            continue
 
+        if command in my_shell.commands:
             result = my_shell.commands[command](*args)
 
             if result is not None:
                 print(result)
-
         else:
-
             my_shell.run_not_found(command, *args)
 
 
