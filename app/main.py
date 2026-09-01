@@ -32,6 +32,7 @@ def main():
                 sys.stdout.write(result)
         else:
             my_shell.run_not_found(command, *args)
+            sys.stdout.write("Command not found")
 
 
 if __name__ == "__main__":
