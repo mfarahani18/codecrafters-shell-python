@@ -25,7 +25,7 @@ class Shell:
                 if cmd.startswith(text):
                     matches.append(cmd)
 
-            external_commands = self.find_executable_by_perfix(text)
+            external_commands = self.find_executable_by_prefix(text)
 
             for cmd in external_commands:
                 if cmd not in matches:
@@ -103,7 +103,7 @@ class Shell:
 
         return None
 
-    def find_executable_by_perfix(self, perfix):
+    def find_executable_by_prefix(self, perfix):
         matches = []
         
         path = os.environ.get("PATH", "")
@@ -118,7 +118,7 @@ class Shell:
                     full_path = os.path.join(path, file_name)
                     if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
                         if full_path not in matches:
-                            matches.append(full_path)
+                            matches.append(file_name)
 
         return matches
 
