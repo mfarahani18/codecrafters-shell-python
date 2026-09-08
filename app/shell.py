@@ -3,6 +3,7 @@ import sys
 import subprocess
 
 
+
 class Shell:
 
     builtin_commands = ["echo", "exit", "type", "pwd", "cd"]
@@ -16,18 +17,83 @@ class Shell:
             "type": lambda *real_args: self.type(*real_args),
         }
 
-    def redirect(self, command, real_args, file_name):
+    def autocomplete(self, text, state):
+
+            matches =[]
+            for cmd in self.builtin_commands:
+                if cmd.startswith(text):
+                    matches.append(cmd)
+            if state < len(matches):
+                if len(matches) == 1:
+                    return matches[state] + " "
+                return matches[state]
+                
+            return None
+
+    def redirect(self, command, real_args, file_name, symbol):
         directory = os.path.dirname(file_name)
+
         if directory:
             os.makedirs(directory, exist_ok=True)
+
         if command in self.commands:
             output = self.commands[command](*real_args)
+            error = ""
         else:
-            output = self.run_not_found(
+            output, error = self.run_not_found(
                 command, *real_args, capture=True)
-        with open(file_name, "w") as f:
+        
+        if symbol in [">", "1>"]:
+            with open(file_name, "w") as f:
+                if output:
+                    f.write(output)
+
+            if error:
+                sys.stderr.write(error)
+        
+        elif symbol in [">>", "1>>"]:
+            with open(file_name, "a") as f:
+                if output:
+                    f.write(output)
+
+            if error:
+                sys.stderr.write(error)
+
+        elif symbol == "2>":
+            # with open(file_name, "w") as f:
+                if output:
+                    sys.stdout.write(output)
+
+                with open(file_name, "w") as f:
+                    if error:
+                        f.write(error)
+
+        elif symbol == "2>>":
             if output:
-                f.write(output)
+                sys.stdout.write(output)
+            
+            with open(file_name, "a") as f:
+                if error:
+                    f.write(error)
+
+
+    def find_executable(self, command):
+        y = os.environ.get("PATH", "")
+        z = y.split(os.pathsep)
+
+        for i in z:
+            full_path = os.path.join(i, command)
+
+            if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
+                return full_path
+
+            for ext in [".exe", ".cmd", ".bat"]:
+                candidate = full_path + ext
+
+                if os.path.isfile(candidate):
+                    return candidate
+
+        return None
 
     def parse_input(self, text):
         args = []
@@ -38,35 +104,46 @@ class Shell:
         escape_next = False
 
         for i, char in enumerate(text):
+
             if escape_next:
                 word += char
                 escape_next = False
                 continue
+
             if char == "\\":
                 if in_single_quotes:
                     word += char
+
                 elif in_double_quotes:
                     if i + 1 < len(text) and text[i + 1] in ['"', "\\"]:
                         escape_next = True
                     else:
                         word += char
+
                 else:
-                    escape_next = True
+                    if i + 1 < len(text) and text[i + 1].isalpha():
+                        word += char
+                    else:
+                        escape_next = True
+
                 continue
+
             elif char == "'" and not in_double_quotes:
                 in_single_quotes = not in_single_quotes
+
             elif char == '"' and not in_single_quotes:
                 in_double_quotes = not in_double_quotes
+
             elif char.isspace() and not in_single_quotes and not in_double_quotes:
                 if word:
                     args.append(word)
                     word = ""
+
             else:
                 word += char
 
         if word:
             args.append(word)
-        # print(args)
 
         return args
 
@@ -84,55 +161,41 @@ class Shell:
         if args[0] == "~":
             home = os.environ["HOME"]
             os.chdir(home)
+
         elif os.path.isdir(args[0]):
             os.chdir(args[0])
+
         else:
             print(f"cd: {args[0]}: No such file or directory")
 
     def type(self, *args):
         if args[0] in self.builtin_commands:
-            print(f"{args[0]} is a shell builtin")
+            return f"{args[0]} is a shell builtin\n"
 
-        else:
-            y = os.environ["PATH"]
-            z = y.split(os.pathsep)
+        full_path = self.find_executable(args[0])
+        
+        if full_path:
+            return f"{args[0]} is {full_path}\n"
 
-            found = False
-
-            for i in z:
-                full_path = os.path.join(i, args[0])
-
-                if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
-                    print(f"{args[0]} is {full_path}")
-                    found = True
-                    break
-
-            if found == False:  # if not found
-                print(f"{args[0]}: not found")
-
+        return f"{args[0]}: not found\n"
 
     def run_not_found(self, command, *args, capture=False):
-        y = os.environ.get("PATH", "")
-        z = y.split(os.pathsep)
+        full_path = self.find_executable(command)
 
-        for i in z:
-            full_path = os.path.join(i, command)
+        if full_path:
+            if capture:
+                result = subprocess.run(
+                    [full_path, *args],
+                    capture_output=True,
+                    text=True,
+                )
+                return result.stdout, result.stderr
 
-            if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
-                if capture:
-                    result = subprocess.run(
-                        [command, *args],
-                        executable=full_path,
-                        capture_output=True,
-                        text=True,
-                    )
+            subprocess.run([full_path, *args])
+            return None
 
-                    if result.stderr:
-                        print(result.stderr, end="")
-                    return result.stdout
+        if capture:
+            return "", f"{command}: command not found"
 
-                else:
-                    subprocess.run([command, *args], executable=full_path)
-                return None
         print(f"{command}: command not found")
         return ""

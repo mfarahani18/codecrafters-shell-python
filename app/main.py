@@ -1,10 +1,22 @@
 from app.shell import Shell
+import readline
 import sys
 
 
 def main():
     my_shell = Shell()
+
+    readline.parse_and_bind("tab: complete")
+    readline.set_completer(my_shell.autocomplete)
+
     while True:
+
+        # try:
+        #     user_input = input("$ ")
+        # except EOFError:
+        #     break
+        # if not user_input.strip():
+        #     continue
         sys.stdout.write("$ ")
         user_input = input()
         parts = my_shell.parse_input(user_input)
@@ -13,13 +25,13 @@ def main():
 
         redirected = False
 
-        redirect_symbols = [">", "1>"]
+        redirect_symbols = [">", "1>", "2>", ">>", "1>>", "2>>"]
         for symbol in redirect_symbols:
             if symbol in args:
                 idx = args.index(symbol)
                 file_name = args[idx + 1]
                 real_args = args[:idx]
-                my_shell.redirect(command, real_args, file_name)
+                my_shell.redirect(command, real_args, file_name, symbol)
                 redirected = True
                 break
 
@@ -32,7 +44,7 @@ def main():
                 sys.stdout.write(result)
         else:
             my_shell.run_not_found(command, *args)
-            sys.stdout.write("Command not found")
+
 
 
 if __name__ == "__main__":
