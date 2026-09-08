@@ -121,10 +121,10 @@ class Shell:
                         word += char
 
                 else:
-                    if i + 1 < len(text) and text[i + 1].isalpha():
-                        word += char
-                    else:
-                        escape_next = True
+                    # if i + 1 < len(text) and text[i + 1].isalpha():
+                    #     word += char
+                    # else:
+                    escape_next = True
 
                 continue
 
