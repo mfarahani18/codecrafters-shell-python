@@ -110,7 +110,7 @@ class Shell:
         paths = path.split(os.pathsep)
 
         for path in paths:
-            if not os.path.isdir(paths):
+            if not os.path.isdir(path):
                 continue
 
             for file_name in os.listdir(path):
