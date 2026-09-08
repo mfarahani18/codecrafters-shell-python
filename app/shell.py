@@ -20,9 +20,17 @@ class Shell:
     def autocomplete(self, text, state):
 
             matches =[]
+
             for cmd in self.builtin_commands:
                 if cmd.startswith(text):
                     matches.append(cmd)
+
+            external_commands = self.find_executable_by_perfix(text)
+
+            for cmd in external_commands:
+                if cmd not in matches:
+                    matches.append(cmd)
+
             if state < len(matches):
                 if len(matches) == 1:
                     return matches[state] + " "
@@ -94,6 +102,25 @@ class Shell:
                     return candidate
 
         return None
+
+    def find_executable_by_perfix(self, perfix):
+        matches = []
+        
+        path = os.environ.get("PATH", "")
+        paths = path.split(os.pathsep)
+
+        for path in paths:
+            if not os.path.isdir(paths):
+                continue
+
+            for file_name in os.listdir(path):
+                if file_name.startswith(perfix):
+                    full_path = os.path.join(path, file_name)
+                    if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
+                        if full_path not in matches:
+                            matches.append(full_path)
+
+        return matches
 
     def parse_input(self, text):
         args = []
