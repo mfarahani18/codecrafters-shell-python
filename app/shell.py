@@ -193,11 +193,11 @@ class Shell:
                 return result.stdout, result.stderr
 
             subprocess.run([full_path, *args],
-            executable=full_path)
+                            executable=full_path)
             return None
 
         if capture:
-            return "", f"{command}: command not found"
+            return "", f"{command}: command not found\n"
 
         print(f"{command}: command not found")
         return ""
