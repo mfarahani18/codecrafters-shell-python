@@ -185,14 +185,14 @@ class Shell:
         if full_path:
             if capture:
                 result = subprocess.run(
-                    [full_path, *args],
+                    [command, *args],
                     executable=full_path,
                     capture_output=True,
                     text=True,
                 )
                 return result.stdout, result.stderr
 
-            subprocess.run([full_path, *args],
+            subprocess.run([command, *args],
                             executable=full_path)
             return None
 
