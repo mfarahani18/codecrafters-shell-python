@@ -39,9 +39,8 @@ class Shell:
         return None
     
     def display_matches(self, user_input, matches, longest_match_length):
-        print()
         print(" ".join(matches))
-        readline.redisplay()
+        print("$ " + user_input, end="")
 
     def redirect(self, command, real_args, file_name, symbol):
         directory = os.path.dirname(file_name)
