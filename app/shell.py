@@ -16,27 +16,30 @@ class Shell:
             "cd": lambda *real_args: self.cd(*real_args),
             "type": lambda *real_args: self.type(*real_args),
         }
+    def find_matches(self, text):
+        matches =[]
+        for cmd in self.builtin_commands:
+            if cmd.startswith(text):
+                matches.append(cmd)
+
+        external_commands = self.find_executable_by_prefix(text)
+        for cmd in external_commands:
+            if cmd not in matches:
+                matches.append(cmd)
+
+        return matches
 
     def autocomplete(self, text, state):
-
-            matches =[]
-
-            for cmd in self.builtin_commands:
-                if cmd.startswith(text):
-                    matches.append(cmd)
-
-            external_commands = self.find_executable_by_prefix(text)
-
-            for cmd in external_commands:
-                if cmd not in matches:
-                    matches.append(cmd)
-
-            if state < len(matches):
-                if len(matches) == 1:
-                    return matches[state] + " "
-                return matches[state]
-                
-            return None
+        matches = self.find_matches(text)
+        if len(matches) == 1:
+            return matches[0] + " "
+        if state < len(matches):
+            return matches[state]
+        return None
+    
+    def display_matches(self, user_input, matches,longest_match_length):
+        print(" ".join(matches))
+        
 
     def redirect(self, command, real_args, file_name, symbol):
         directory = os.path.dirname(file_name)
