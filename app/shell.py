@@ -28,7 +28,7 @@ class Shell:
             if cmd not in matches:
                 matches.append(cmd)
 
-        return matches
+        return (matches)
 
     def autocomplete(self, text, state):
         matches = self.find_matches(text)
@@ -39,8 +39,10 @@ class Shell:
         return None
     
     def display_matches(self, user_input, matches, longest_match_length):
-        print(" ".join(matches))
-        print("\r\n$" + user_input, end="")
+        sys.stdout.write("\r\n")
+        sys.stdout.write(" ".join(sorted(matches)))
+        sys.stdout.write("\r\n$ " + user_input + " ")
+        sys.stdout.flush()
 
     def redirect(self, command, real_args, file_name, symbol):
         directory = os.path.dirname(file_name)
