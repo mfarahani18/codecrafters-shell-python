@@ -32,10 +32,11 @@ class Shell:
 
     def autocomplete(self, text, state):
         matches = self.find_matches(text)
-        if len(matches) == 1:
-            return matches[0] + " "
         if state < len(matches):
+            if len(matches) == 1:
+                return matches[state] + " "
             return matches[state]
+        
         return None
     
     def display_matches(self, user_input, matches, longest_match_length):
