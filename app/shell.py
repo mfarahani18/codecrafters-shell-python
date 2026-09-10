@@ -18,26 +18,28 @@ class Shell:
             "type": lambda *real_args: self.type(*real_args),
         }
     def find_matches(self, text, args):
-        matches =[]
+        matches = []
 
         if args:
             if "/" in args[-1]:
-                files = self.find_file_by_path(args[-1])
-                return files
-                
-            files = self.find_file_by_prefix(args[-1])
-            return files
-        else:
-            for cmd in self.builtin_commands:
-                if cmd.startswith(text):
-                    matches.append(cmd)
+                return self.find_file_by_path(args[-1])
 
-            external_commands = self.find_executable_by_prefix(text)
-            for cmd in external_commands:
-                if cmd not in matches:
-                    matches.append(cmd)
+            return self.find_file_by_prefix(args[-1])
 
-            return matches
+        if text == "":
+            return self.find_file_by_prefix("")
+
+        for cmd in self.builtin_commands:
+            if cmd.startswith(text):
+                matches.append(cmd)
+
+        external_commands = self.find_executable_by_prefix(text)
+
+        for cmd in external_commands:
+            if cmd not in matches:
+                matches.append(cmd)
+
+    return matches
 
     def autocomplete(self, text, state):
         line = readline.get_line_buffer()
@@ -144,15 +146,16 @@ class Shell:
 
     def find_file_by_prefix(self, perfix):
         matches = []
-
         path = os.getcwd()
 
-        for file_name in os.listdir(path):
-            if file_name.startswith(perfix):
-                full_path = os.path.join(path, file_name)
-                if os.path.isfile(full_path):
-                    if file_name not in matches:
-                        matches.append(file_name)
+        for entry in os.listdir(path):
+            if entry.startswith(perfix):
+                full_path = os.path.join(path, entry)
+
+                if os.path.isdir(full_path):
+                        matches.append(entry + "/")
+                else:
+                        matches.append(entry)
 
         return matches
 
