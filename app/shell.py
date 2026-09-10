@@ -165,7 +165,10 @@ class Shell:
         for entry in os.listdir(directory):
             if entry.startswith(file_name):
                 full_path = os.path.join(directory, entry)
-                if os.path.isfile(full_path):
+                if os.path.isdir(full_path):
+                    if entry + "/" not in matches:
+                        matches.append(entry + "/")
+                else:
                     if entry not in matches:
                         matches.append(entry)
 
