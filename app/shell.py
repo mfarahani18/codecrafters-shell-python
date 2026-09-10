@@ -24,6 +24,10 @@ class Shell:
             files = self.find_file_by_prefix(args[-1])
             return files
 
+        elif "/" in text:
+            files = self.find_file_by_path(text)
+            return files
+
         else:
             for cmd in self.builtin_commands:
                 if cmd.startswith(text):
@@ -150,6 +154,24 @@ class Shell:
                         matches.append(file_name)
 
         return matches
+
+    def find_file_by_path(self,text):
+        matches = []
+
+        idx = text.rfind("/")
+
+        directory = text[:idx]
+        file_name = text[idx + 1:]
+
+        for entry in os.listdir(directory):
+            if entry.startswith(file_name):
+                full_path = os.path.join(directory, entry)
+                if os.path.isfile(full_path):
+                    if full_path not in matches:
+                        matches.append(full_path)
+
+        return matches
+
 
     def parse_input(self, text):
         args = []
