@@ -44,6 +44,8 @@ class Shell:
         command, *args = line.split()
         matches = self.find_matches(text, args)
         if state < len(matches):
+            if matches[state].endswith("/"):
+                return matches[state]
             if len(matches) == 1:
                 return matches[state] + " "
             return matches[state]
