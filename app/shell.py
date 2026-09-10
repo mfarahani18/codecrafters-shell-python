@@ -160,7 +160,7 @@ class Shell:
 
         idx = text.rfind("/")
 
-        directory = text[:idx+1]
+        directory = text[:idx +1]
         file_name = text[idx + 1:]
 
         for entry in os.listdir(directory):
