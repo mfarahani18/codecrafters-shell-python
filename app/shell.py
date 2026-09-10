@@ -39,7 +39,7 @@ class Shell:
             if cmd not in matches:
                 matches.append(cmd)
 
-    return matches
+        return matches
 
     def autocomplete(self, text, state):
         line = readline.get_line_buffer()
