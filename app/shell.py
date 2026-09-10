@@ -153,8 +153,10 @@ class Shell:
                 full_path = os.path.join(path, entry)
 
                 if os.path.isdir(full_path):
+                    if entry + "/" not in matches:
                         matches.append(entry + "/")
                 else:
+                    if entry not in matches:
                         matches.append(entry)
 
         return matches
