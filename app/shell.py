@@ -16,7 +16,8 @@ class Shell:
             "pwd": lambda: self.pwd(),
             "cd": lambda *real_args: self.cd(*real_args),
             "type": lambda *real_args: self.type(*real_args),
-        }
+            "complete": lambda *real_args: self.complete(*real_args),
+            }
     def find_matches(self, text, args):
         matches = []
 
@@ -265,6 +266,10 @@ class Shell:
             return f"{args[0]} is {full_path}\n"
 
         return f"{args[0]}: not found\n"
+
+    def complete(self, *args):
+        command = args[1]
+        return f"complete: {command}: no completion specification\n"
 
     def run_not_found(self, command, *args, capture=False):
         full_path = self.find_executable(command)
