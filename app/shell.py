@@ -24,10 +24,10 @@ class Shell:
             if "/" in args[-1]:
                 return self.find_file_by_path(args[-1])
 
-            return self.find_file_by_prefix(args[-1])
+            return self.find_entry_by_prefix(args[-1])
 
         if text == "":
-            return self.find_file_by_prefix("")
+            return self.find_entry_by_prefix("")
 
         for cmd in self.builtin_commands:
             if cmd.startswith(text):
@@ -144,7 +144,7 @@ class Shell:
 
         return matches
 
-    def find_file_by_prefix(self, perfix):
+    def find_entry_by_prefix(self, perfix):
         matches = []
         path = os.getcwd()
 
