@@ -166,8 +166,8 @@ class Shell:
             if entry.startswith(file_name):
                 full_path = os.path.join(directory, entry)
                 if os.path.isfile(full_path):
-                    if full_path not in matches:
-                        matches.append(full_path)
+                    if entry not in matches:
+                        matches.append(entry)
 
         return matches
 
