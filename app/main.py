@@ -5,6 +5,7 @@ import sys
 
 def main():
     my_shell = Shell()
+
     readline.set_completer(my_shell.autocomplete)
     readline.parse_and_bind("tab: complete")
     readline.set_completion_display_matches_hook(my_shell.display_matches)

@@ -17,21 +17,29 @@ class Shell:
             "cd": lambda *real_args: self.cd(*real_args),
             "type": lambda *real_args: self.type(*real_args),
         }
-    def find_matches(self, text):
+    def find_matches(self, text, args):
         matches =[]
-        for cmd in self.builtin_commands:
-            if cmd.startswith(text):
-                matches.append(cmd)
 
-        external_commands = self.find_executable_by_prefix(text)
-        for cmd in external_commands:
-            if cmd not in matches:
-                matches.append(cmd)
+        if args:
+            files = self.find_file_by_prefix(args[-1])
+            return files
 
-        return (matches)
+        else:
+            for cmd in self.builtin_commands:
+                if cmd.startswith(text):
+                    matches.append(cmd)
+
+            external_commands = self.find_executable_by_prefix(text)
+            for cmd in external_commands:
+                if cmd not in matches:
+                    matches.append(cmd)
+
+            return matches
 
     def autocomplete(self, text, state):
-        matches = self.find_matches(text)
+        line = readline.get_line_buffer()
+        command, *args = line.split()
+        matches = self.find_matches(text, args)
         if state < len(matches):
             if len(matches) == 1:
                 return matches[state] + " "
@@ -124,8 +132,22 @@ class Shell:
                 if file_name.startswith(perfix):
                     full_path = os.path.join(path, file_name)
                     if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
-                        if full_path not in matches:
+                        if file_name not in matches:
                             matches.append(file_name)
+
+        return matches
+
+    def find_file_by_prefix(self, perfix):
+        matches = []
+
+        path = os.getcwd()
+
+        for file_name in os.listdir(path):
+            if file_name.startswith(perfix):
+                full_path = os.path.join(path, file_name)
+                if os.path.isfile(full_path):
+                    if file_name not in matches:
+                        matches.append(file_name)
 
         return matches
 
