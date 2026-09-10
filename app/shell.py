@@ -7,7 +7,7 @@ import readline
 
 class Shell:
 
-    builtin_commands = ["echo", "exit", "type", "pwd", "cd"]
+    builtin_commands = ["echo", "exit", "type", "pwd", "cd", "complete" ]
 
     def __init__(self):
         self.commands = {
