@@ -52,7 +52,7 @@ class Shell:
                 return matches[state]
                 
             if len(matches) == 1:
-                return matches[state].replace(text, "") + " "
+                return matches[state] + " "
             return matches[state]
         
         return None
