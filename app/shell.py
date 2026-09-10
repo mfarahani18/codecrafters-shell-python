@@ -21,13 +21,12 @@ class Shell:
         matches =[]
 
         if args:
+            if "/" in args[-1]:
+                files = self.find_file_by_path(args[-1])
+                return files
+                
             files = self.find_file_by_prefix(args[-1])
             return files
-
-        elif "/" in text:
-            files = self.find_file_by_path(text)
-            return files
-
         else:
             for cmd in self.builtin_commands:
                 if cmd.startswith(text):
@@ -160,7 +159,7 @@ class Shell:
 
         idx = text.rfind("/")
 
-        directory = text[:idx +1]
+        directory = text[:idx]
         file_name = text[idx + 1:]
 
         for entry in os.listdir(directory):
