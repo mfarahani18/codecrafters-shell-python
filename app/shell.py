@@ -53,7 +53,7 @@ class Shell:
                 
             if len(matches) == 1:
                 return matches[state].replace(text, "") + " "
-            return matches[state].replace(text, "")
+            return matches[state]
         
         return None
     
