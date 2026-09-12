@@ -322,6 +322,8 @@ class Shell:
         
         for job_number in finished_jobs:
             del self.jobs_data[job_number]
+        job_numbers = list(self.jobs_data.keys())
+
     def run_background(self, command, args, original_command):
         process = subprocess.Popen([command, *args[:-1]])
         
