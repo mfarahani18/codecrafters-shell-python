@@ -278,7 +278,7 @@ class Shell:
             self.completions[key] = valu
         elif args[0] == "-p":
                 if args[1] in self.completions:
-                    return f"complete -C {self.completions[args[1]]} + "\n" 
+                    return f"complete -C '{self.completions[args[1]]}'\n" 
                 else:
                     return f"complete: {args[1]}: no completion specification\n"
     def run_not_found(self, command, *args, capture=False):
