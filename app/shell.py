@@ -324,8 +324,6 @@ class Shell:
 
                 
     def jobs(self):
-        
-        self.reap_jobs()
          
         job_numbers = list(self.jobs_data.keys())
         finished_jobs = []
@@ -346,6 +344,7 @@ class Shell:
             else:
                 self.print_done_job(job_number, data, job_numbers)
                 finished_jobs.append(job_number)
+                
         for job_number in finished_jobs:
             del self.jobs_data[job_number]
     def run_background(self, command, args, original_command):
