@@ -49,7 +49,7 @@ class Shell:
         command, *args = line.split()
         
         if command in self.completions:
-            full_path = self.completions(command)
+            full_path = self.completions[command]
             
             result = subprocess.run(
                 [full_path],
