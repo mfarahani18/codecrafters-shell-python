@@ -305,6 +305,8 @@ class Shell:
                     return f"complete -C '{self.completions[args[1]]}' {args[1]}\n"
                 else:
                     return f"complete: {args[1]}: no completion specification\n"
+        elif args[0] == "-r":
+            self.completions.pop(args[1])
     def run_not_found(self, command, *args, capture=False):
         
         full_path = self.find_executable(command)
