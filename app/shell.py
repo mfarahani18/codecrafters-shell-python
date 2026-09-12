@@ -10,6 +10,8 @@ class Shell:
     builtin_commands = ["echo", "exit", "type", "pwd", "cd", "complete" ]
 
     def __init__(self):
+        self.completions = {}
+        
         self.commands = {
             "exit": lambda: self.exit(),
             "echo": lambda *real_args: self.echo(*real_args),
@@ -270,10 +272,17 @@ class Shell:
         return f"{args[0]}: not found\n"
 
     def complete(self, *args):
-        command = args[1]
-        return f"complete: {command}: no completion specification\n"
-
+        if args[0] == "-C":
+            valu = args[1]
+            key = args[2]
+            self.completions[key] = valu
+        elif args[0] == "-p":
+                if args[1] in self.completions:
+                    return f"complete -C {self.completions[args[1]]} + "\n" 
+                else:
+                    return f"complete: {args[1]}: no completion specification\n"
     def run_not_found(self, command, *args, capture=False):
+        
         full_path = self.find_executable(command)
 
         if full_path:
