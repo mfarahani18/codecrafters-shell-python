@@ -66,10 +66,10 @@ class Shell:
                 return matches[state]
                 
             if len(matches) == 1:
-                # return matches[state] + " "
-                if text and matches[state].startswith(text):
-                    return matches[state][len(text):] + " "
                 return matches[state] + " "
+                # if text and matches[state].startswith(text):
+                #     return matches[state][len(text):] + " "
+                # return matches[state] + " "
             return matches[state]
         
         return None
@@ -188,16 +188,19 @@ class Shell:
 
         directory = text[:idx]
         file_name = text[idx + 1:]
+        prefix = text[:idx + 1]
 
         for entry in os.listdir(directory):
             if entry.startswith(file_name):
                 full_path = os.path.join(directory, entry)
                 if os.path.isdir(full_path):
-                    if entry + "/" not in matches:
-                        matches.append(entry + "/")
+                    entry_name = prefix + entry + "/"
+                    if entry_name not in matches:
+                        matches.append(entry_name)
                 else:
-                    if entry not in matches:
-                        matches.append(entry)
+                    entry_name = prefix + entry
+                    if entry_name not in matches:
+                        matches.append(entry_name)
 
         return matches
 
