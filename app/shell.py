@@ -46,54 +46,34 @@ class Shell:
 
     def autocomplete(self, text, state):
         line = readline.get_line_buffer()
-        parts = line.split()
-
-        if not parts:
-            matches = self.find_matches(text, [])
-        else:
-            command = parts[0]
-            args = parts[1:]
+        command, *args = line.split()
+        
+        if command in self.completions:
+            full_path = self.completions[command]
             
-            # اگر کاربر فقط دستور را تایپ کرده و هنوز اسپیس نزده، در حال تکمیل نام دستور است
-            if len(parts) == 1 and not line.endswith(" "):
-                matches = self.find_matches(text, [])
-            elif command in self.completions:
-                full_path = self.completions[command]
-                result = subprocess.run(
-                    [full_path],
-                    capture_output=True,
-                    text=True,
-                )
-                matches = [m for m in result.stdout.split() if m.startswith(text)]
-            else:
-                matches = self.find_matches(text, args)
+            result = subprocess.run(
+                [full_path],
+                capture_output=True,
+                text=True,
+            )
+            
+            matches = result.stdout.split()
+        else:
+            matches = self.find_matches(text, args)
 
-        if not matches:
-            return None
-
-        # حالت ۱: دقیقاً یک تطابق وجود دارد
-        if len(matches) == 1:
-            if state == 0:
-                match = matches[0]
-                # در صورتی که دایرکتوری باشد اسپیس اضافه نمی‌شود
-                if match.endswith("/"):
-                    return match
-                return match + " "
-            return None
-
-        # حالت ۲: چند تطابق وجود دارد
-        # محاسبه بزرگ‌ترین پیشوند مشترک بین تمام گزینه‌ها
-        common_prefix = os.path.commonprefix(matches)
-        if len(common_prefix) > len(text):
-            if state == 0:
-                return common_prefix
-            return None
-
-        # اگر پیشوند مشترک جدیدی وجود ندارد، فقط گزینه‌ها برای نمایش ثبت شده
-        # و مقداری برگردانده نمی‌شود تا خط تغییر نکند (رفتار زنگ/Bell)
         if state < len(matches):
+            if matches[state].endswith("/"):
+                return matches[state]
+                
+            if len(matches) == 1:
+                return matches[state] + " "
+                # if text and matches[state].startswith(text):
+                #     return matches[state][len(text):] + " "
+                # return matches[state] + " "
             return matches[state]
+        
         return None
+    
     def display_matches(self, user_input, matches, longest_match_length):
         sys.stdout.write("\r\n")
         sys.stdout.write(" ".join(sorted(matches)))
