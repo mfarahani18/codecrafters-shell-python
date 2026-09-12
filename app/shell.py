@@ -299,8 +299,8 @@ class Shell:
     def jobs(self):
         pass
 
-    def run_background(self, command, *args, original_command):
-        process = subprocess.Popen([command, *args[:-1]])
+    def run_background(self, command, args, original_command):
+        process = subprocess.Popen([command, args[:-1]])
         
         job_number = self.next_job_number()
         
