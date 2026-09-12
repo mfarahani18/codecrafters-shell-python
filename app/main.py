@@ -27,8 +27,9 @@ def main():
         args = parts[1:]
 
         if args[-1] == "&":
-            subprocess.Popen([command, *args[:-1]])
-            continue
+            process = subprocess.Popen([command, *args[:-1]])
+            print(process.pid)
+            
         redirected = False
 
         redirect_symbols = [">", "1>", "2>", ">>", "1>>", "2>>"]
