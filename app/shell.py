@@ -12,6 +12,7 @@ class Shell:
     def __init__(self):
         self.completions = {}
         self.jobs_data = {}
+        self.next_job_number = 1
         self.commands = {
             "exit": lambda: self.exit(),
             "echo": lambda *real_args: self.echo(*real_args),
