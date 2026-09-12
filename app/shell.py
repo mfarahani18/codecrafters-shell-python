@@ -298,6 +298,7 @@ class Shell:
         return f"{args[0]}: not found\n"
     
     def jobs(self):
+        
         job_numbers = list(self.jobs_data.keys())
         finished_jobs = []
 
