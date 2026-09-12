@@ -27,7 +27,7 @@ def main():
         args = parts[1:]
 
         if args and args[-1] == "&":
-            my_shell.run_background(command, args)
+            my_shell.run_background(command, args, user_input)
             continue
         
         redirected = False
