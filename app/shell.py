@@ -47,7 +47,20 @@ class Shell:
     def autocomplete(self, text, state):
         line = readline.get_line_buffer()
         command, *args = line.split()
-        matches = self.find_matches(text, args)
+        
+        if command in self.completions:
+            full_path = self.completions(command)
+            
+            result = subprocess.run(
+                [command, *args],
+                executable=full_path,
+                capture_output=True,
+                text=True,
+            )
+            
+            matches = result.stdout.split()
+        else:
+            matches = self.find_matches(text, args)
 
         if state < len(matches):
             if matches[state].endswith("/"):
