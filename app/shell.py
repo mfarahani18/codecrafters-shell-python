@@ -50,9 +50,12 @@ class Shell:
         
         if command in self.completions:
             full_path = self.completions[command]
-            
+            if len(args) < 2:
+                previous = ""
+            else:
+                previous = args[-2]
             result = subprocess.run(
-                [full_path],
+                [full_path, command, text, previous],
                 capture_output=True,
                 text=True,
             )
