@@ -26,7 +26,7 @@ def main():
         command = parts[0]
         args = parts[1:]
 
-        if args[-1] == "&":
+        if args and args[-1] == "&":
             process = subprocess.Popen([command, *args[:-1]])
             print(f"[1] {process.pid}")
             continue
