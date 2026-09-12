@@ -8,6 +8,7 @@ def main():
 
     readline.set_completer(my_shell.autocomplete)
     readline.parse_and_bind("tab: complete")
+    readline.set_completer_delims(" \t\n")
     readline.set_completion_display_matches_hook(my_shell.display_matches)
 
     while True:
