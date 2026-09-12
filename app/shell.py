@@ -19,6 +19,7 @@ class Shell:
             "cd": lambda *real_args: self.cd(*real_args),
             "type": lambda *real_args: self.type(*real_args),
             "complete": lambda *real_args: self.complete(*real_args),
+            "jobs": lambda: self.jobs(),
             }
     def find_matches(self, text, args):
         matches = []
@@ -294,6 +295,9 @@ class Shell:
             return f"{args[0]} is {full_path}\n"
 
         return f"{args[0]}: not found\n"
+    
+    def jobs(self):
+        pass
 
     def complete(self, *args):
         if args[0] == "-C":
@@ -307,6 +311,7 @@ class Shell:
                     return f"complete: {args[1]}: no completion specification\n"
         elif args[0] == "-r":
             self.completions.pop(args[1], None)
+            
     def run_not_found(self, command, *args, capture=False):
         
         full_path = self.find_executable(command)
