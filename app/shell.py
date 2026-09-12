@@ -11,7 +11,7 @@ class Shell:
 
     def __init__(self):
         self.completions = {}
-        
+        self.jobs_data = {}
         self.commands = {
             "exit": lambda: self.exit(),
             "echo": lambda *real_args: self.echo(*real_args),
@@ -298,6 +298,20 @@ class Shell:
     
     def jobs(self):
         pass
+
+    def run_background(self, command, *args, original_command):
+        process = subprocess.Popen([command, *args[:-1]])
+        
+        job_number = self.next_job_number()
+        
+        self.jobs_data[job_number] = {
+            "pid": process.pid,
+            "command": original_command,
+            "status": "running"
+        }
+        
+        self.next_job_number += 1
+        return f"[{job_number}] {process.pid}"
 
     def complete(self, *args):
         if args[0] == "-C":
