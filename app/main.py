@@ -1,5 +1,6 @@
 from app.shell import Shell
 import readline
+import subprocess
 import sys
 
 
@@ -25,6 +26,9 @@ def main():
         command = parts[0]
         args = parts[1:]
 
+        if args[-1] == "&":
+            subprocess.Popen([command, *args[:-1]])
+            continue
         redirected = False
 
         redirect_symbols = [">", "1>", "2>", ">>", "1>>", "2>>"]
