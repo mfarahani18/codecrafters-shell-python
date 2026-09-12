@@ -7,7 +7,7 @@ import readline
 
 class Shell:
 
-    builtin_commands = ["echo", "exit", "type", "pwd", "cd", "complete" ]
+    builtin_commands = ["echo", "exit", "type", "pwd", "cd", "complete", "jobs" ]
 
     def __init__(self):
         self.completions = {}
@@ -306,7 +306,7 @@ class Shell:
                 else:
                     return f"complete: {args[1]}: no completion specification\n"
         elif args[0] == "-r":
-            self.completions.pop(args[1])
+            self.completions.pop(args[1], None)
     def run_not_found(self, command, *args, capture=False):
         
         full_path = self.find_executable(command)
