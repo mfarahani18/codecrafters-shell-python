@@ -299,7 +299,8 @@ class Shell:
     
     def jobs(self):
         for job_number, data in self.jobs_data.items():
-            print(f"[{job_number}] {data['status']:<24}{data['command']}")
+            status = f"{'Running':<24}"
+            print(f"[{job_number}]+  {status}{data['command']}")
 
     def run_background(self, command, args, original_command):
         process = subprocess.Popen([command, *args[:-1]])
