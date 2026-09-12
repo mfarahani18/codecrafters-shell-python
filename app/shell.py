@@ -48,7 +48,7 @@ class Shell:
         line = readline.get_line_buffer()
         command, *args = line.split()
         COMP_LINE = line
-        COMP_POINT = len(COMP_LINE)
+        COMP_POINT = str(len(COMP_LINE))
         if command in self.completions:
             full_path = self.completions[command]
             if len(args) < 2:
