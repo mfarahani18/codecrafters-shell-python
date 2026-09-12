@@ -299,23 +299,35 @@ class Shell:
     
     def jobs(self):
         job_numbers = list(self.jobs_data.keys())
+        finished_jobs = []
+
         
         for job_number, data in self.jobs_data.items():
-            status = f"{data['status']:<24}"
             
-            if job_number == job_numbers[-1]:
-                print(f"[{job_number}]+  {status}{data['command']}")
-            elif len(job_numbers) > 1 and job_number == job_numbers[-2]:
-                print(f"[{job_number}]-  {status}{data['command']}")
+            if data["process"].poll() is None:
+                
+                status = f"{data['status']:<24}"
+                if job_number == job_numbers[-1]:
+                    print(f"[{job_number}]+  {status}{data['command']}")
+                elif len(job_numbers) > 1 and job_number == job_numbers[-2]:
+                    print(f"[{job_number}]-  {status}{data['command']}")
+                else:
+                    print(f"[{job_number}]   {status}{data['command']}")
             else:
-                print(f"[{job_number}]   {status}{data['command']}")
-
+                status = f"{'Done':<24}"
+                done_command = data["command"].rstrip(" &")
+                print(f"[{job_number}]+  {status}{done_command}")
+                finished_jobs.append(job_number)
+        
+        for job_number in finished_jobs:
+            del self.jobs_data[job_number]
     def run_background(self, command, args, original_command):
         process = subprocess.Popen([command, *args[:-1]])
         
         job_number = self.next_job_number
         
         self.jobs_data[job_number] = {
+            "process": process,
             "pid": process.pid,
             "command": original_command,
             "status": "running"
