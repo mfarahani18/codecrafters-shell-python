@@ -66,10 +66,10 @@ class Shell:
                 return matches[state]
                 
             if len(matches) == 1:
-                return matches[state] + " "
-                # if text and matches[state].startswith(text):
-                #     return matches[state][len(text):] + " "
                 # return matches[state] + " "
+                if text and matches[state].startswith(text):
+                    return matches[state][len(text):] + " "
+                return matches[state] + " "
             return matches[state]
         
         return None
