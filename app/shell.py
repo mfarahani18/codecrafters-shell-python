@@ -298,7 +298,8 @@ class Shell:
         return f"{args[0]}: not found\n"
     
     def jobs(self):
-        pass
+        for job_number, data in self.jobs_data.items():
+            print(f"[{job_number}] {data['pid']} {data['status']}")
 
     def run_background(self, command, args, original_command):
         process = subprocess.Popen([command, *args[:-1]])
