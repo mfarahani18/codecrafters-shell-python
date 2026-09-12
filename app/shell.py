@@ -52,8 +52,7 @@ class Shell:
             full_path = self.completions(command)
             
             result = subprocess.run(
-                [command, *args],
-                executable=full_path,
+                [full_path],
                 capture_output=True,
                 text=True,
             )
