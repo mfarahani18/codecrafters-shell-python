@@ -66,12 +66,15 @@ class Shell:
                 return matches[state]
                 
             if len(matches) == 1:
+                if text and matches[state].startswith(text):
+                    return matches[state][len(text):] + " "
                 return matches[state] + " "
             return matches[state]
         
         return None
     
     def display_matches(self, user_input, matches, longest_match_length):
+        
         sys.stdout.write("\r\n")
         sys.stdout.write(" ".join(sorted(matches)))
         sys.stdout.write("\r\n$ " + readline.get_line_buffer())
