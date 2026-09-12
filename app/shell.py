@@ -62,14 +62,15 @@ class Shell:
             matches = self.find_matches(text, args)
 
         if state < len(matches):
-            if matches[state].endswith("/"):
-                return matches[state]
+            match = matches[state]
+            
+            if match.endswith("/"):
+                return matches
                 
             if len(matches) == 1:
-                if text and matches[state].startswith(text):
-                    return matches[state][len(text):] + " "
-                return matches[state] + " "
-            return matches[state]
+                return match + " "
+            
+            return match
         
         return None
     
