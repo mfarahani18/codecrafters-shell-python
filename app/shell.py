@@ -52,7 +52,7 @@ class Shell:
         if command in self.completions:
             full_path = self.completions[command]
             if len(args) < 2:
-                previous = ""
+                previous = command
             else:
                 previous = args[-2]
                 
