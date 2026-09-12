@@ -298,9 +298,17 @@ class Shell:
         return f"{args[0]}: not found\n"
     
     def jobs(self):
+        job_numbers = list(self.jobs_data.keys())
+        
         for job_number, data in self.jobs_data.items():
-            status = f"{'Running':<24}"
-            print(f"[{job_number}]+  {status}{data['command']}")
+            status = f"{data['status']:<24}"
+            
+            if job_number == job_numbers[-1]:
+                print(f"[{job_number}]+  {status}{data['command']}")
+            elif len(job_numbers) > 1 and job_number == job_numbers[-2]:
+                print(f"[{job_number}]-  {status}{data['command']}")
+            else:
+                print(f"[{job_number}]   {status}{data['command']}")
 
     def run_background(self, command, args, original_command):
         process = subprocess.Popen([command, *args[:-1]])
