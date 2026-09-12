@@ -47,17 +47,20 @@ class Shell:
     def autocomplete(self, text, state):
         line = readline.get_line_buffer()
         command, *args = line.split()
-        
+        COMP_LINE = line
+        COMP_POINT = len(COMP_LINE)
         if command in self.completions:
             full_path = self.completions[command]
             if len(args) < 2:
                 previous = ""
             else:
                 previous = args[-2]
+                
             result = subprocess.run(
                 [full_path, command, text, previous],
                 capture_output=True,
                 text=True,
+                env={"COMP_LINE": COMP_LINE, "COMP_POINT": COMP_POINT}
             )
             
             matches = result.stdout.split()
