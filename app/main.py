@@ -20,6 +20,7 @@ def main():
         #     break
         # if not user_input.strip():
         #     continue
+        my_shell.reap_jobs()
         sys.stdout.write("$ ")
         user_input = input()
         parts = my_shell.parse_input(user_input)

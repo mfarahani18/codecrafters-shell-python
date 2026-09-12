@@ -297,12 +297,35 @@ class Shell:
 
         return f"{args[0]}: not found\n"
     
-    def jobs(self):
-        
+    def reap_jobs(self):
         job_numbers = list(self.jobs_data.keys())
         finished_jobs = []
 
+        for job_number, data in self.jobs_data.items():
+            if data["process"].poll() is not None:
+                status = f"{'Done':<24}"
+                done_command = data["command"].rstrip(" &")
+
+                if job_number == job_numbers[-1]:
+                    print(f"[{job_number}]+  {status}{done_command}")
+                    
+                elif len(job_numbers) > 1 and job_number == job_numbers[-2]:
+                    print(f"[{job_number}]-  {status}{done_command}")
+                else:
+                    print(f"[{job_number}]   {status}{done_command}")
+                    
+                finished_jobs.append(job_number)
+                
+        for job_number in finished_jobs:
+            del self.jobs_data[job_number]
+                     
+                
+    def jobs(self):
         
+        self.reap_jobs()
+         
+        job_numbers = list(self.jobs_data.keys())
+
         for job_number, data in self.jobs_data.items():
             
             if data["process"].poll() is None:
@@ -314,21 +337,6 @@ class Shell:
                     print(f"[{job_number}]-  {status}{data['command']}")
                 else:
                     print(f"[{job_number}]   {status}{data['command']}")
-            else:
-                status = f"{'Done':<24}"
-                done_command = data["command"].rstrip(" &")
-
-                if job_number == job_numbers[-1]:
-                    print(f"[{job_number}]+  {status}{done_command}")
-                    
-                elif len(job_numbers) > 1 and job_number == job_numbers[-2]:
-                    print(f"[{job_number}]-  {status}{done_command}")
-                else:
-                    print(f"[{job_number}]   {status}{done_command}")
-                finished_jobs.append(job_number)
-        
-        for job_number in finished_jobs:
-            del self.jobs_data[job_number]
     def run_background(self, command, args, original_command):
         process = subprocess.Popen([command, *args[:-1]])
         
