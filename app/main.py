@@ -2,6 +2,7 @@ from app.shell import Shell
 import readline
 import subprocess
 import sys
+import io
 
 
 def main():
@@ -29,19 +30,30 @@ def main():
             idx = parts.index("|")
             left = parts[:idx]
             right = parts[idx + 1:]
+            
             command = left[0]
             args = left[1:]
             
-            
-            
-            process1 = subprocess.Popen(
-                [command, *args],
-                stdout=subprocess.PIPE,
-                text=True,
-            )
-            
             right_command = right[0]
             right_args = right[1:]
+            
+            if command in my_shell.builtin_commands:
+                result = my_shell.commands[command](*args)
+                
+                process2 = subprocess.Popen(
+                    [right_command, *right_args],
+                    stdin=subprocess.PIPE,
+                    text=True,
+                )
+                
+                process2.communicate(input=result)
+                
+            else:
+                process1 = subprocess.Popen(
+                    [command, *args],
+                    stdout=subprocess.PIPE,
+                    text=True,
+                )
             
             process2 = subprocess.Popen(
                 [right_command, *right_args],
@@ -49,7 +61,6 @@ def main():
                 text=True,
             )
             
-            process2.wait()
             process1.stdout.close()
             process1.wait()
             
