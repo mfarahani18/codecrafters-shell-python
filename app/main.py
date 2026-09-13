@@ -50,7 +50,7 @@ def main():
                 
             else:
                 if right_command in my_shell.commands:
-                    result = my_shell.commands[command](*args)
+                    result = my_shell.commands[right_command](*right_args)
                     process2 = subprocess.Popen(
                         [right_command, *right_args],
                         stdin=subprocess.PIPE,
