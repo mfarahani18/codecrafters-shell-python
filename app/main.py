@@ -56,6 +56,7 @@ def main():
                 )
                 
                 process1.communicate()
+                result = my_shell.commands[right_command](*right_args)
                         
             else:
                 process1 = subprocess.Popen(
