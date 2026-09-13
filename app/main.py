@@ -49,22 +49,34 @@ def main():
                 process2.communicate(input=result)
                 
             else:
-                process1 = subprocess.Popen(
-                    [command, *args],
-                    stdout=subprocess.PIPE,
-                    text=True,
-                )
-            
-                process2 = subprocess.Popen(
-                    [right_command, *right_args],
-                    stdin=process1.stdout,
-                    text=True,
-                )
+                if right_command in my_shell.commands:
+                    result = my_shell.commands[command](*args)
+                    process2 = subprocess.Popen(
+                        [right_command, *right_args],
+                        stdin=subprocess.PIPE,
+                        text=True,
+                    )
+                    
+                    process2.communicate(input=result)
+                    
+                else:
+                    process1 = subprocess.Popen(
+                        [command, *args],
+                        stdout=subprocess.PIPE,
+                        text=True,
+                    )
                 
-                process1.stdout.close()
-                process1.wait()
-            
+                    process2 = subprocess.Popen(
+                        [right_command, *right_args],
+                        stdin=process1.stdout,
+                        text=True,
+                    )
+                    
+                    process1.stdout.close()
+                    process1.wait()
+                    
             continue
+                
             
         command = parts[0]
         args = parts[1:]
