@@ -408,7 +408,7 @@ class Shell:
             
             process1.communicate()
             
-            result = my_shell.commands[right_command](*right_args)
+            result = self.commands[right_command](*right_args)
             if result is not None:
                 sys.stdout.write(result)
                     
