@@ -24,6 +24,37 @@ def main():
         sys.stdout.write("$ ")
         user_input = input()
         parts = my_shell.parse_input(user_input)
+        
+        if "|" in parts:
+            idx = parts.index("|")
+            left = parts[:idx]
+            right = parts[idx + 1:]
+            command = left[0]
+            args = left[1:]
+            
+            
+            
+            process1 = subprocess.Popen(
+                [command, *args],
+                stdout=subprocess.PIPE,
+                text=True,
+            )
+            
+            right_command = right[0]
+            right_args = right[1:]
+            
+            process2 = subprocess.Popen(
+                [right_command, *right_args],
+                stdin=process1.stdout,
+                text=True,
+            )
+            
+            process2.wait()
+            process1.stdout.close()
+            process1.wait()
+            
+            continue
+            
         command = parts[0]
         args = parts[1:]
 
