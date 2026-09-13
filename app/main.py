@@ -56,6 +56,7 @@ def main():
                 )
                 
                 process1.communicate()
+                
                 result = my_shell.commands[right_command](*right_args)
                 if result is not None:
                     sys.stdout.write(result)
@@ -75,6 +76,7 @@ def main():
                 
                 process1.stdout.close()
                 process1.wait()
+                process2.wait()
                 
             continue
                 
