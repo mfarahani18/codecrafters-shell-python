@@ -393,22 +393,21 @@ class Shell:
                 
         for i,command_parts in enumerate(commands):
             
+            command = command_parts[0]
+            args = command_parts[1:]
+            
             if i == 0:
-                
-                command = command_parts[0]
-                args = command_parts[1:]
                 
                 r , w = os.pipe()
                 
                 if command in self.builtin_commands:
                     result = self.commands[command](*args)
                     
-                    data  = result.encode()
-                    os.write(w, data)
+                    if result is not None:
+                        data  = result.encode()
+                        os.write(w, data)
                     os.close(w)
                     
-                    # next_command = commands[i + 1][0]
-                    # next_args = commands[i + 1][1:]
                 else:
                     process = subprocess.Popen(
                         [command, *args],
@@ -419,8 +418,6 @@ class Shell:
                     
             
             elif i == len(commands) - 1:
-                command = command_parts[0]
-                args = command_parts[1:]
                 
                 if command in self.builtin_commands:
                     result = self.commands[command](*args)
@@ -434,27 +431,28 @@ class Shell:
                         stdin=previous_pipe,
                         text=True,
                     )
+                    
+                    os.close(previous_pipe)
                     process.wait()
-            
             else:
-                command = command_parts[0]
-                args = command_parts[1:]
-                
+
                 r , w = os.pipe()
                 
                 if command in self.builtin_commands:
                     result = self.commands[command](*args)
-                    data = result.encode()
-                    os.write(w, data)
+                    
+                    if result is not None:
+                        data = result.encode()
+                        os.write(w, data)
                     os.close(w)
+                    
                 else:
                     process = subprocess.Popen(
                         [command, *args],
                         stdin=previous_pipe,
                         stdout=w,
-                        text=True,
                     )
-                os.close(w)
+                os.close(previous_pipe)
                 previous_pipe = r
         # idx = parts.index("|")
         # left = parts[:idx]

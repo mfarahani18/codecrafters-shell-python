@@ -25,91 +25,11 @@ def main():
         sys.stdout.write("$ ")
         user_input = input()
         parts = my_shell.parse_input(user_input)
-        
-        current = []
-        commands = []
-        for part in parts:
-            if part == "|":
-                commands.append(current)
-                current = []
-            else:
-                current.append(part)
-        commands.append(current)
-                
-        for i,command_parts in enumerate(commands):
-            if i == 0:
-                
-                command = command_parts[0]
-                args = command_parts[1:]
-                
-                
-                if command in my_shell.builtin_commands:
-                    result = my_shell.commands[command](*args)
-                    
-                
-            
-            elif i == len(commands) - 1:
-                pass
-            
-            else:
-                pass
                 
         if "|" in parts:
-            # my_shell.run_pipeline(parts)
-            # continue
-            idx = parts.index("|")
-            left = parts[:idx]
-            right = parts[idx + 1:]
-            
-            command = left[0]
-            args = left[1:]
-            
-            right_command = right[0]
-            right_args = right[1:]
-            
-            if command in my_shell.builtin_commands:
-                result = my_shell.commands[command](*args)
-                
-                process2 = subprocess.Popen(
-                    [right_command, *right_args],
-                    stdin=subprocess.PIPE,
-                    text=True,
-                )
-                
-                process2.communicate(input=result)
-                
-            elif right_command in my_shell.builtin_commands:
-                process1 = subprocess.Popen(
-                    [command, *args],
-                    stdout=subprocess.PIPE,
-                    text=True,
-                )
-                
-                process1.communicate()
-                
-                result = my_shell.commands[right_command](*right_args)
-                if result is not None:
-                    sys.stdout.write(result)
-                        
-            else:
-                process1 = subprocess.Popen(
-                    [command, *args],
-                    stdout=subprocess.PIPE,
-                    text=True,
-                )
-            
-                process2 = subprocess.Popen(
-                    [right_command, *right_args],
-                    stdin=process1.stdout,
-                    text=True,
-                )
-                
-                process1.stdout.close()
-                process1.wait()
-                process2.wait()
-                
+            my_shell.run_pipeline(parts)
             continue
-                
+        
             
         command = parts[0]
         args = parts[1:]
