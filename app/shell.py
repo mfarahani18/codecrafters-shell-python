@@ -378,56 +378,134 @@ class Shell:
             self.completions.pop(args[1], None)
     
     def run_pipeline(self, parts):
-        idx = parts.index("|")
-        left = parts[:idx]
-        right = parts[idx + 1:]
         
-        command = left[0]
-        args = left[1:]
+        commands = []
+        current = []
+        for part in parts:
+            if part == "|":
+                commands.append(current)
+                current = []
+            else:
+                current.append(part)
+        commands.append(current)
         
-        right_command = right[0]
-        right_args = right[1:]
-        
-        if command in self.builtin_commands:
-            result = self.commands[command](*args)
+        previous_pipe = None
+                
+        for i,command_parts in enumerate(commands):
             
-            process2 = subprocess.Popen(
-                [right_command, *right_args],
-                stdin=subprocess.PIPE,
-                text=True,
-            )
-            
-            process2.communicate(input=result)
-            
-        elif right_command in self.builtin_commands:
-            process1 = subprocess.Popen(
-                [command, *args],
-                stdout=subprocess.PIPE,
-                text=True,
-            )
-            
-            process1.communicate()
-            
-            result = self.commands[right_command](*right_args)
-            if result is not None:
-                sys.stdout.write(result)
+            if i == 0:
+                
+                command = command_parts[0]
+                args = command_parts[1:]
+                
+                r , w = os.pipe()
+                
+                if command in self.builtin_commands:
+                    result = self.commands[command](*args)
                     
-        else:
-            process1 = subprocess.Popen(
-                [command, *args],
-                stdout=subprocess.PIPE,
-                text=True,
-            )
-        
-            process2 = subprocess.Popen(
-                [right_command, *right_args],
-                stdin=process1.stdout,
-                text=True,
-            )
+                    data  = result.encode()
+                    os.write(w, data)
+                    os.close(w)
+                    
+                    # next_command = commands[i + 1][0]
+                    # next_args = commands[i + 1][1:]
+                else:
+                    process = subprocess.Popen(
+                        [command, *args],
+                        stdout=w,
+                    )
+                    os.close(w)
+                previous_pipe = r
+                    
             
-            process1.stdout.close()
-            process1.wait()
-            process2.wait()
+            elif i == len(commands) - 1:
+                command = command_parts[0]
+                args = command_parts[1:]
+                
+                if command in self.builtin_commands:
+                    result = self.commands[command](*args)
+                    
+                    if result is not None:
+                        sys.stdout.write(result)
+
+                else:
+                    process = subprocess.Popen(
+                        [command, *args],
+                        stdin=previous_pipe,
+                        text=True,
+                    )
+                    process.wait()
+            
+            else:
+                command = command_parts[0]
+                args = command_parts[1:]
+                
+                r , w = os.pipe()
+                
+                if command in self.builtin_commands:
+                    result = self.commands[command](*args)
+                    data = result.encode()
+                    os.write(w, data)
+                    os.close(w)
+                else:
+                    process = subprocess.Popen(
+                        [command, *args],
+                        stdin=previous_pipe,
+                        stdout=w,
+                        text=True,
+                    )
+                os.close(w)
+                previous_pipe = r
+        # idx = parts.index("|")
+        # left = parts[:idx]
+        # right = parts[idx + 1:]
+        
+        # command = left[0]
+        # args = left[1:]
+        
+        # right_command = right[0]
+        # right_args = right[1:]
+        
+        # if command in self.builtin_commands:
+        #     result = self.commands[command](*args)
+            
+        #     process2 = subprocess.Popen(
+        #         [right_command, *right_args],
+        #         stdin=subprocess.PIPE,
+        #         text=True,
+        #     )
+            
+        #     process2.communicate(input=result)
+            
+        # elif right_command in self.builtin_commands:
+        #     process1 = subprocess.Popen(
+        #         [command, *args],
+        #         stdout=subprocess.PIPE,
+        #         text=True,
+        #     )
+            
+        #     process1.communicate()
+            
+        #     result = self.commands[right_command](*right_args)
+        #     if result is not None:
+        #         sys.stdout.write(result)
+                    
+        # else:
+        #     process1 = subprocess.Popen(
+        #         [command, *args],
+        #         stdout=subprocess.PIPE,
+        #         text=True,
+        #     )
+        
+        #     process2 = subprocess.Popen(
+        #         [right_command, *right_args],
+        #         stdin=process1.stdout,
+        #         text=True,
+        #     )
+            
+        #     process1.stdout.close()
+        #     process1.wait()
+        #     process2.wait()
             
     def run_not_found(self, command, *args, capture=False):
         
