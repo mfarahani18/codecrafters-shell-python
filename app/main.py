@@ -27,58 +27,60 @@ def main():
         parts = my_shell.parse_input(user_input)
         
         if "|" in parts:
-            idx = parts.index("|")
-            left = parts[:idx]
-            right = parts[idx + 1:]
-            
-            command = left[0]
-            args = left[1:]
-            
-            right_command = right[0]
-            right_args = right[1:]
-            
-            if command in my_shell.builtin_commands:
-                result = my_shell.commands[command](*args)
-                
-                process2 = subprocess.Popen(
-                    [right_command, *right_args],
-                    stdin=subprocess.PIPE,
-                    text=True,
-                )
-                
-                process2.communicate(input=result)
-                
-            elif right_command in my_shell.builtin_commands:
-                process1 = subprocess.Popen(
-                    [command, *args],
-                    stdout=subprocess.PIPE,
-                    text=True,
-                )
-                
-                process1.communicate()
-                
-                result = my_shell.commands[right_command](*right_args)
-                if result is not None:
-                    sys.stdout.write(result)
-                        
-            else:
-                process1 = subprocess.Popen(
-                    [command, *args],
-                    stdout=subprocess.PIPE,
-                    text=True,
-                )
-            
-                process2 = subprocess.Popen(
-                    [right_command, *right_args],
-                    stdin=process1.stdout,
-                    text=True,
-                )
-                
-                process1.stdout.close()
-                process1.wait()
-                process2.wait()
-                
+            my_shell.run_pipeline(parts)
             continue
+            # idx = parts.index("|")
+            # left = parts[:idx]
+            # right = parts[idx + 1:]
+            
+            # command = left[0]
+            # args = left[1:]
+            
+            # right_command = right[0]
+            # right_args = right[1:]
+            
+            # if command in my_shell.builtin_commands:
+            #     result = my_shell.commands[command](*args)
+                
+            #     process2 = subprocess.Popen(
+            #         [right_command, *right_args],
+            #         stdin=subprocess.PIPE,
+            #         text=True,
+            #     )
+                
+            #     process2.communicate(input=result)
+                
+            # elif right_command in my_shell.builtin_commands:
+            #     process1 = subprocess.Popen(
+            #         [command, *args],
+            #         stdout=subprocess.PIPE,
+            #         text=True,
+            #     )
+                
+            #     process1.communicate()
+                
+            #     result = my_shell.commands[right_command](*right_args)
+            #     if result is not None:
+            #         sys.stdout.write(result)
+                        
+            # else:
+            #     process1 = subprocess.Popen(
+            #         [command, *args],
+            #         stdout=subprocess.PIPE,
+            #         text=True,
+            #     )
+            
+            #     process2 = subprocess.Popen(
+            #         [right_command, *right_args],
+            #         stdin=process1.stdout,
+            #         text=True,
+            #     )
+                
+            #     process1.stdout.close()
+            #     process1.wait()
+            #     process2.wait()
+                
+            # continue
                 
             
         command = parts[0]

@@ -376,6 +376,58 @@ class Shell:
                     return f"complete: {args[1]}: no completion specification\n"
         elif args[0] == "-r":
             self.completions.pop(args[1], None)
+    
+    def run_pipeline(self, parts):
+        idx = parts.index("|")
+        left = parts[:idx]
+        right = parts[idx + 1:]
+        
+        command = left[0]
+        args = left[1:]
+        
+        right_command = right[0]
+        right_args = right[1:]
+        
+        if command in self.builtin_commands:
+            result = self.commands[command](*args)
+            
+            process2 = subprocess.Popen(
+                [right_command, *right_args],
+                stdin=subprocess.PIPE,
+                text=True,
+            )
+            
+            process2.communicate(input=result)
+            
+        elif right_command in my_shell.builtin_commands:
+            process1 = subprocess.Popen(
+                [command, *args],
+                stdout=subprocess.PIPE,
+                text=True,
+            )
+            
+            process1.communicate()
+            
+            result = my_shell.commands[right_command](*right_args)
+            if result is not None:
+                sys.stdout.write(result)
+                    
+        else:
+            process1 = subprocess.Popen(
+                [command, *args],
+                stdout=subprocess.PIPE,
+                text=True,
+            )
+        
+            process2 = subprocess.Popen(
+                [right_command, *right_args],
+                stdin=process1.stdout,
+                text=True,
+            )
+            
+            process1.stdout.close()
+            process1.wait()
+            process2.wait()
             
     def run_not_found(self, command, *args, capture=False):
         
