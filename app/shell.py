@@ -7,7 +7,7 @@ import readline
 
 class Shell:
 
-    builtin_commands = ["echo", "exit", "type", "pwd", "cd", "complete", "jobs" ]
+    builtin_commands = ["echo", "exit", "type", "pwd", "cd", "complete", "jobs", "history" ]
 
     def __init__(self):
         self.completions = {}
