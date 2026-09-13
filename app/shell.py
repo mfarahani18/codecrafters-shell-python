@@ -399,7 +399,7 @@ class Shell:
             
             process2.communicate(input=result)
             
-        elif right_command in my_shell.builtin_commands:
+        elif right_command in self.builtin_commands:
             process1 = subprocess.Popen(
                 [command, *args],
                 stdout=subprocess.PIPE,
