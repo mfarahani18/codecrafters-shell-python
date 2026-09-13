@@ -55,14 +55,14 @@ def main():
                     text=True,
                 )
             
-            process2 = subprocess.Popen(
-                [right_command, *right_args],
-                stdin=process1.stdout,
-                text=True,
-            )
-            
-            process1.stdout.close()
-            process1.wait()
+                process2 = subprocess.Popen(
+                    [right_command, *right_args],
+                    stdin=process1.stdout,
+                    text=True,
+                )
+                
+                process1.stdout.close()
+                process1.wait()
             
             continue
             
