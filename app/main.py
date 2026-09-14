@@ -1,4 +1,4 @@
-from app.shell import Shell
+from shell import Shell
 import readline
 import subprocess
 import sys
