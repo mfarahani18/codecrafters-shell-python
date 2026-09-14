@@ -15,7 +15,7 @@ class Shell:
         self.history_data = []
         self.last_append_index = 0
         
-        histfile = os.environ.get("HISTFILE")
+        self.histfile = os.environ.get("HISTFILE")
         if histfile:
             with open(histfile) as file:
                 for line in file:
@@ -281,8 +281,12 @@ class Shell:
     def pwd(self):
         result = os.getcwd()
         return result + "\n"
-
+    
     def exit(self):
+        if self.histfile:
+            with open(self.histfile, "w") as file:
+                for command in self.history_data:
+                    file.write(command + "\n")
         sys.exit()
 
     def echo(self, *args):
