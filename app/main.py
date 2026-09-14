@@ -25,7 +25,7 @@ def main():
         my_shell.reap_jobs()
         sys.stdout.write("$ ")
         user_input = input()
-        
+        readline.add_history(user_input)
         my_shell.history_data.append(user_input)
         
         parts = my_shell.parse_input(user_input)

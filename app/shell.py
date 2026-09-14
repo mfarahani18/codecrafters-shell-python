@@ -357,8 +357,8 @@ class Shell:
         else:
             number = int(args[0])
             recent_history = self.history_data[-number:]
-            stsrt = len(self.history_data) - number + 1
-            for i, command in enumerate(recent_history, start=stsrt):
+            start = len(self.history_data) - number + 1
+            for i, command in enumerate(recent_history, start=start):
                 print(f"{i} {command}")
             
             
