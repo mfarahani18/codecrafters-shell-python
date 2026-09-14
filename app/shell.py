@@ -7,7 +7,7 @@ import readline
 
 class Shell:
 
-    builtin_commands = ["echo", "exit", "type", "pwd", "cd", "complete", "jobs", "history" ]
+    builtin_commands = ["echo", "exit", "type", "pwd", "cd", "complete", "jobs", "history", "declare" ]
 
     def __init__(self):
         self.completions = {}
@@ -34,6 +34,7 @@ class Shell:
             "complete": lambda *real_args: self.complete(*real_args),
             "jobs": lambda: self.jobs(),
             "history": lambda *real_args: self.history(*real_args),
+            "declare": lambda: self.declare(),
             }
     def find_matches(self, text, args):
         matches = []
