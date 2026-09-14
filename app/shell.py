@@ -404,7 +404,7 @@ class Shell:
             if args[1] in self.variables:
                 print(f'declare -- {args[1]}="{self.variables[args[1]]}"')
             else:
-                print(f"declare -p: {args[1]}: not found")
+                print(f"declare: {args[1]}: not found")
 
         else:
             name, value = args[0].split("=")
