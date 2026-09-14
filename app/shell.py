@@ -413,26 +413,20 @@ class Shell:
                 self.variables[name] = value
             else:
                 print(f"declare: `{args[0]}': not a valid identifier")
-            
+
     def expand_variables(self, parts):
         excpanded=[]
         
         for part in parts:
-            
-            def replace_variable(match):
-                variable = match.group(1)
-                
-                if variable in self.variables:
-                    return self.variables[variable]
-                return ""
-            
+             
             part = re.sub(
                         r"\$\{([a-zA-Z_][a-zA-Z0-9_]*)\}|\$([a-zA-Z_][a-zA-Z0-9_]*)",
                         lambda match: self.variables.get(match.group(1) or match.group(2), ""),
                         part
                     )            
-            excpanded.append(part)
-            
+            if part != "":
+                excpanded.append(part)
+    
         return excpanded
     def run_background(self, command, args, original_command):
         process = subprocess.Popen([command, *args[:-1]])
