@@ -16,8 +16,8 @@ class Shell:
         self.last_append_index = 0
         
         self.histfile = os.environ.get("HISTFILE")
-        if histfile:
-            with open(histfile) as file:
+        if self.histfile:
+            with open(self.histfile) as file:
                 for line in file:
                     line = line.rstrip("\n")
                     if line:
