@@ -35,7 +35,7 @@ def main():
         parts = my_shell.parse_input(user_input)
         if not parts:
             continue
-                
+        parts = my_shell.expand_variables(parts)
         if "|" in parts:
             my_shell.run_pipeline(parts)
             continue

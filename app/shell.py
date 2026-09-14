@@ -414,7 +414,20 @@ class Shell:
             else:
                 print(f"declare: `{args[0]}': not a valid identifier")
             
-        
+    def expand_variables(self, parts):
+        excpanded=[]
+        for part in parts:
+            if part.startswith("$"):
+                variable = part[1:]
+                
+                if variable in self.variables:
+                    excpanded.append(self.variables[variable])
+                    
+                else:
+                    excpanded.append("")
+            else:
+                excpanded.append(part)
+        return excpanded
     def run_background(self, command, args, original_command):
         process = subprocess.Popen([command, *args[:-1]])
         
