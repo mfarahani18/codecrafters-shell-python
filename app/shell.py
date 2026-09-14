@@ -359,7 +359,7 @@ class Shell:
             path = args[1]
             with open(path) as file:
                 for line in file:
-                    # line = line.rsplit("\n")
+                    line = line.rstrip()
                     if line:
                         self.history_data.append(line)
                         
