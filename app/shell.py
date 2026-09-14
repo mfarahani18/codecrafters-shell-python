@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 import subprocess
 import readline
@@ -408,7 +409,10 @@ class Shell:
 
         else:
             name, value = args[0].split("=")
-            self.variables[name] = value
+            if re.match(r"^[a-zA-Z_][a-zA-Z0-9_]*$", name):
+                self.variables[name] = value
+            else:
+                print(f"declare: {args[0]}: not a valid identifier")
             
         
     def run_background(self, command, args, original_command):
