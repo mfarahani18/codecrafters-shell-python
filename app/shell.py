@@ -359,9 +359,10 @@ class Shell:
             path = args[1]
             with open(path) as file:
                 for line in file:
-                    line = line.rsplit("\n")
+                    # line = line.rsplit("\n")
                     if line:
                         self.history_data.append(line)
+                        
 
         else:
             number = int(args[0])
