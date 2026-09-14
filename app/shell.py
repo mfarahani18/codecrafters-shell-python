@@ -362,8 +362,11 @@ class Shell:
                     line = line.rstrip("\n")
                     if line:
                         self.history_data.append(line)
-                        
-
+        elif args[0] == "-w":
+            path = args[1]
+            with open(path, "w") as file:
+                for command in self.history_data:
+                    file.write(command + "\n")
         else:
             number = int(args[0])
             recent_history = self.history_data[-number:]
