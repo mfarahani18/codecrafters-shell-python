@@ -12,7 +12,7 @@ def main():
     readline.parse_and_bind("tab: complete")
     readline.set_completer_delims(" \t\n")
     readline.set_completion_display_matches_hook(my_shell.display_matches)
-
+    
     while True:
 
         # try:
@@ -21,9 +21,13 @@ def main():
         #     break
         # if not user_input.strip():
         #     continue
+        
         my_shell.reap_jobs()
         sys.stdout.write("$ ")
         user_input = input()
+        
+        my_shell.history_data.append(user_input)
+        
         parts = my_shell.parse_input(user_input)
                 
         if "|" in parts:

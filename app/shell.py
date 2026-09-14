@@ -12,6 +12,8 @@ class Shell:
     def __init__(self):
         self.completions = {}
         self.jobs_data = {}
+        self.history_data = []
+        
         self.commands = {
             "exit": lambda: self.exit(),
             "echo": lambda *real_args: self.echo(*real_args),
@@ -20,6 +22,7 @@ class Shell:
             "type": lambda *real_args: self.type(*real_args),
             "complete": lambda *real_args: self.complete(*real_args),
             "jobs": lambda: self.jobs(),
+            "history": lambda: self.history(),
             }
     def find_matches(self, text, args):
         matches = []
@@ -346,6 +349,11 @@ class Shell:
                 
         for job_number in finished_jobs:
             del self.jobs_data[job_number]
+            
+    def history(self):
+        for number, command in enumerate(self.history_data):
+            print(f"{number + 1} {command}")
+        
     def run_background(self, command, args, original_command):
         process = subprocess.Popen([command, *args[:-1]])
         
@@ -437,6 +445,7 @@ class Shell:
                         text=True,
                     )
                     processes.append(process)
+                    
                 if previous_pipe is not None:
                     os.close(previous_pipe)
             else:
