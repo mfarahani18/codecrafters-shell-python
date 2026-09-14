@@ -412,7 +412,7 @@ class Shell:
             if re.match(r"^[a-zA-Z_][a-zA-Z0-9_]*$", name):
                 self.variables[name] = value
             else:
-                print(f"declare: {args[0]}: not a valid identifier")
+                print(f"declare: `{args[0]}': not a valid identifier")
             
         
     def run_background(self, command, args, original_command):
