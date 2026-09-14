@@ -34,7 +34,7 @@ class Shell:
             "complete": lambda *real_args: self.complete(*real_args),
             "jobs": lambda: self.jobs(),
             "history": lambda *real_args: self.history(*real_args),
-            "declare": lambda: self.declare(),
+            "declare": lambda *real_args: self.declare(*real_args),
             }
     def find_matches(self, text, args):
         matches = []
