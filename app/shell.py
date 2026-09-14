@@ -425,8 +425,12 @@ class Shell:
                 if variable in self.variables:
                     return self.variables[variable]
                 return ""
-            part = re.sub(r"\$([a-zA-Z_][a-zA-Z0-9_]*)", replace_variable, part)
             
+            part = re.sub(
+                        r"\$\{([a-zA-Z_][a-zA-Z0-9_]*)\}|\$([a-zA-Z_][a-zA-Z0-9_]*)",
+                        lambda match: self.variables.get(match.group(1) or match.group(2), ""),
+                        part
+                    )            
             excpanded.append(part)
             
         return excpanded
