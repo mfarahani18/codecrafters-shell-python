@@ -402,11 +402,10 @@ class Shell:
 
         if args[0] == "-p":
             if args[1] in self.variables:
-                print(f"declare -- {args[1]}="{self.variables[args[1]]}"")
+                print(f'declare -- {args[1]}="{self.variables[args[1]]}"')
             else:
                 print(f"declare -p: {args[1]}: not found")
-            variable = args[1]
-            print(f"declare: {variable}: not found")
+
         else:
             name, value = args[0].split("=")
             self.variables[name] = value
