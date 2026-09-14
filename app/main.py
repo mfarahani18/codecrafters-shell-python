@@ -15,22 +15,26 @@ def main():
     
     while True:
 
-        # try:
-        #     user_input = input("$ ")
-        # except EOFError:
-        #     break
-        # if not user_input.strip():
-        #     continue
-        
         my_shell.reap_jobs()
         
-        user_input = input("$ ")
+        try:
+            user_input = input("$ ")
+        except EOFError:
+            break
+        if not user_input.strip():
+            continue
         
-        if user_input.strip():
-            readline.add_history(user_input)
-            my_shell.history_data.append(user_input)
+        # my_shell.reap_jobs()
+        
+        # sys.stdout.write("$ ")
+        # user_input = input()
+        
+        # readline.add_history(user_input)
+        my_shell.history_data.append(user_input)
         
         parts = my_shell.parse_input(user_input)
+        if not parts:
+            continue
                 
         if "|" in parts:
             my_shell.run_pipeline(parts)
