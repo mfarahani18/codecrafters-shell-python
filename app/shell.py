@@ -354,6 +354,14 @@ class Shell:
         if not args :
             for number, command in enumerate(self.history_data):
                 print(f"{number + 1} {command}")
+        elif args[0] == "-r":
+            path = args[1]
+            with open(path) as file:
+                for line in file:
+                    line = line.rsplit("\n")
+                    if line:
+                        self.history_data.append(line)
+
         else:
             number = int(args[0])
             recent_history = self.history_data[-number:]
