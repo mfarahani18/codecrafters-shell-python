@@ -397,7 +397,12 @@ class Shell:
             for i, command in enumerate(recent_history, start=start):
                 print(f"{i} {command}")
             
+    def declare(self, *args):
+        if args[0] == "-p":
+            variable = args[1]
+            print(f"declare: {variable}: not found")
             
+        
     def run_background(self, command, args, original_command):
         process = subprocess.Popen([command, *args[:-1]])
         
