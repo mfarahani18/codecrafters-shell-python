@@ -13,9 +13,18 @@ class Shell:
         self.completions = {}
         self.jobs_data = {}
         self.history_data = []
-        self.history_data = []
         self.last_append_index = 0
         
+        histfile = os.environ.get("HISTFILE")
+        if histfile:
+            with open(histfile) as file:
+                for line in file:
+                    line = line.rstrip("\n")
+                    if line:
+                        self.history_data.append(line)
+            self.last_append_index = len(self.history_data)
+            
+            
         self.commands = {
             "exit": lambda: self.exit(),
             "echo": lambda *real_args: self.echo(*real_args),
