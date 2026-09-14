@@ -13,6 +13,8 @@ class Shell:
         self.completions = {}
         self.jobs_data = {}
         self.history_data = []
+        self.history_data = []
+        self.last_append_index = 0
         
         self.commands = {
             "exit": lambda: self.exit(),
@@ -367,6 +369,13 @@ class Shell:
             with open(path, "w") as file:
                 for command in self.history_data:
                     file.write(command + "\n")
+        elif args[0] == "-a":
+            path = args[1]
+            with open(path, "a") as file:
+                for command in self.history_data[self.last_append_index:]:
+                    file.write(command + "\n")
+            self.last_append_index = len(self.history_data)
+            
         else:
             number = int(args[0])
             recent_history = self.history_data[-number:]
