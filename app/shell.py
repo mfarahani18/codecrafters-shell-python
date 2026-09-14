@@ -14,6 +14,7 @@ class Shell:
         self.jobs_data = {}
         self.history_data = []
         self.last_append_index = 0
+        self.variables = {}
         
         self.histfile = os.environ.get("HISTFILE")
         if self.histfile:
@@ -398,9 +399,17 @@ class Shell:
                 print(f"{i} {command}")
             
     def declare(self, *args):
+
         if args[0] == "-p":
+            if args[1] in self.variables:
+                print(f"declare -- {args[1]}="{self.variables[args[1]]}"")
+            else:
+                print(f"declare -p: {args[1]}: not found")
             variable = args[1]
             print(f"declare: {variable}: not found")
+        else:
+            name, value = args[0].split("=")
+            self.variables[name] = value
             
         
     def run_background(self, command, args, original_command):
