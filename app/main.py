@@ -7,6 +7,8 @@ import io
 
 def main():
     my_shell = Shell()
+    
+    readline.clear_history()
 
     readline.set_completer(my_shell.autocomplete)
     readline.parse_and_bind("tab: complete")
@@ -26,7 +28,7 @@ def main():
         sys.stdout.write("$ ")
         user_input = input()
         readline.add_history(user_input)
-        # my_shell.history_data.append(user_input)
+        my_shell.history_data.append(user_input)
         
         parts = my_shell.parse_input(user_input)
                 
