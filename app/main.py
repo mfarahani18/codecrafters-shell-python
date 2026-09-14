@@ -26,8 +26,9 @@ def main():
         
         user_input = input("$ ")
         
-        readline.add_history(user_input)
-        my_shell.history_data.append(user_input)
+        if user_input.strip():
+            readline.add_history(user_input)
+            my_shell.history_data.append(user_input)
         
         parts = my_shell.parse_input(user_input)
                 
