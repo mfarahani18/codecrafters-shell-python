@@ -22,7 +22,7 @@ class Shell:
             "type": lambda *real_args: self.type(*real_args),
             "complete": lambda *real_args: self.complete(*real_args),
             "jobs": lambda: self.jobs(),
-            "history": lambda: self.history(),
+            "history": lambda *real_args: self.history(*real_args),
             }
     def find_matches(self, text, args):
         matches = []
@@ -350,10 +350,18 @@ class Shell:
         for job_number in finished_jobs:
             del self.jobs_data[job_number]
             
-    def history(self):
-        for number, command in enumerate(self.history_data):
-            print(f"{number + 1} {command}")
-        
+    def history(self, *args):
+        if not args :
+            for number, command in enumerate(self.history_data):
+                print(f"{number + 1} {command}")
+        else:
+            number = int(args[0])
+            recent_history = self.history_data[-number:]
+            stsrt = len(self.history_data) - number + 1
+            for i, command in enumerate(recent_history, start=stsrt):
+                print(f"{i} {command}")
+            
+            
     def run_background(self, command, args, original_command):
         process = subprocess.Popen([command, *args[:-1]])
         
