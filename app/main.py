@@ -7,8 +7,6 @@ import io
 
 def main():
     my_shell = Shell()
-    
-    readline.clear_history()
 
     readline.set_completer(my_shell.autocomplete)
     readline.parse_and_bind("tab: complete")
