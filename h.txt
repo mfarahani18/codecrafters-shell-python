@@ -1,0 +1,12 @@
+echo hello
+cat error.txt
+clear
+history -w h.txt
+echo hello
+cat error.txt
+clear
+history -w h.txt
+ls
+jobs
+clear
+history -a h.txt

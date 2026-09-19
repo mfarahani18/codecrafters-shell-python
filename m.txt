@@ -1,0 +1,2 @@
+salam
+salm: command not found
